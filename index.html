@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Now</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">☀️</div>
+        Weather Now
+      </div>
+      <div class="units-btn" id="unitsBtn">
+        <span>⚙️</span>
+        <span>Units</span>
+        <span>▼</span>
+        <div class="units-menu" id="unitsMenu">
+          <div class="units-section">
+            <div class="units-section-title">Temperature</div>
+            <div class="units-option" data-type="temp" data-value="metric">
+              <span>Celsius (°C)</span>
+              <span class="checkmark">✓</span>
+            </div>
+            <div class="units-option" data-type="temp" data-value="imperial">
+              <span>Fahrenheit (°F)</span>
+              <span class="checkmark" style="display:none">✓</span>
+            </div>
+          </div>
+          <div class="units-section">
+            <div class="units-section-title">Wind Speed</div>
+            <div class="units-option" data-type="wind" data-value="kmh">
+              <span>km/h</span>
+              <span class="checkmark">✓</span>
+            </div>
+            <div class="units-option" data-type="wind" data-value="mph">
+              <span>mph</span>
+              <span class="checkmark" style="display:none">✓</span>
+            </div>
+          </div>
+          <div class="units-section">
+            <div class="units-section-title">Precipitation</div>
+            <div class="units-option" data-type="precip" data-value="mm">
+              <span>Millimeters (mm)</span>
+              <span class="checkmark">✓</span>
+            </div>
+            <div class="units-option" data-type="precip" data-value="in">
+              <span>Inches (in)</span>
+              <span class="checkmark" style="display:none">✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="hero">
+      <h1>How's the sky looking today?</h1>
+      <div class="search-container">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search for a place...">
+        <button class="search-btn" id="searchBtn">Search</button>
+      </div>
+    </div>
+
+    <div class="main-grid" id="mainContent">
+      <div>
+        <div class="weather-card">
+          <span class="star-decoration star-1">✦</span>
+          <span class="star-decoration star-2">✦</span>
+          
+          <div class="weather-location" id="locationName">Berlin, Germany</div>
+          <div class="weather-date" id="currentDate">Tuesday, Aug 5, 2025</div>
+
+          <div class="weather-main">
+            <div class="weather-icon" id="mainIcon">☀️</div>
+            <div class="weather-temp" id="mainTemp">68°</div>
+          </div>
+
+          
+        </div>
+        <div class="weather-details">
+            <div class="detail-card">
+              <div class="detail-label">Feels Like</div>
+              <div class="detail-value" id="feelsLike">64°</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Humidity</div>
+              <div class="detail-value" id="humidity">46%</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Wind</div>
+              <div class="detail-value" id="wind">9 mph</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Precipitation</div>
+              <div class="detail-value" id="precipitation">0 in</div>
+            </div>
+          </div>
+
+        <div class="daily-forecast">
+          <h2>Daily forecast</h2>
+          <div class="daily-grid" id="dailyGrid">
+            <!-- Daily items will be inserted here -->
+          </div>
+        </div>
+      </div>
+
+      <div class="hourly-panel">
+        <div class="hourly-header">
+          <h2>Hourly forecast</h2>
+          <select class="day-selector" id="daySelector">
+            <option value="0">Today</option>
+          </select>
+        </div>
+        <div class="hourly-list" id="hourlyList">
+          <!-- Hourly items will be inserted here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="state-overlay hidden" id="loadingState">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Error State -->
+  <div class="state-overlay hidden" id="errorState">
+    <div class="error-content">
+      <p id="errorMessage">An error occurred. Please try again.</p>
+      <button class="retry-btn" id="retryBtn">Retry</button>
+    </div>
+  </div>
+
+  <script src="./js/script.js">
+
+  </script>
+</body>
+</html>
