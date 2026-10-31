@@ -170,6 +170,31 @@
       transform: translateY(-2px);
     }
 
+    .location-btn {
+      background: linear-gradient(135deg, #FF8C42 0%, #FFA726 100%);
+      border: none;
+      padding: 16px 28px;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .location-btn:hover {
+      background: linear-gradient(135deg, #FFA726 0%, #FFB84D 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 140, 66, 0.4);
+    }
+
+    .location-btn:active {
+      transform: translateY(0);
+    }
+
     /* Main Grid */
     .main-grid {
       display: grid;

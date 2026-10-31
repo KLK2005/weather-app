@@ -6,11 +6,13 @@
     let currentWindUnit = 'kmh';
     let currentPrecipUnit = 'mm';
     let lastCity = 'Douala';
+    let lastCoords = null;
     let forecastData = null;
 
     // Éléments du DOM
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
+    const locationBtn = document.getElementById('locationBtn');
     const unitsBtn = document.getElementById('unitsBtn');
     const unitsMenu = document.getElementById('unitsMenu');
     const mainContent = document.getElementById('mainContent');
@@ -85,6 +87,82 @@
       }
     }
 
+    // 🆕 Fonction de géolocalisation
+    function getUserLocation() {
+      if (!navigator.geolocation) {
+        document.getElementById('errorMessage').textContent = 'La géolocalisation n\'est pas supportée par votre navigateur.';
+        showState('error');
+        return;
+      }
+
+      showState('loading');
+      
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          lastCoords = { lat, lon };
+          fetchWeatherByCoords(lat, lon);
+        },
+        (error) => {
+          console.error('Erreur de géolocalisation:', error);
+          let errorMessage = 'Impossible d\'obtenir votre position.';
+          
+          switch(error.code) {
+            case error.PERMISSION_DENIED:
+              errorMessage = 'Vous avez refusé l\'accès à votre position. Veuillez autoriser la géolocalisation dans les paramètres de votre navigateur.';
+              break;
+            case error.POSITION_UNAVAILABLE:
+              errorMessage = 'Position non disponible.';
+              break;
+            case error.TIMEOUT:
+              errorMessage = 'La demande de position a expiré.';
+              break;
+          }
+          
+          document.getElementById('errorMessage').textContent = errorMessage;
+          showState('error');
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    }
+
+    // 🆕 Récupérer la météo par coordonnées géographiques
+    async function fetchWeatherByCoords(lat, lon) {
+      try {
+        showState('loading');
+
+        const weatherRes = await fetch(
+          `${BASE_WEATHER}?lat=${lat}&lon=${lon}&units=${currentUnit}&appid=${API_KEY}`
+        );
+        
+        if (!weatherRes.ok) {
+          throw new Error('Échec de la récupération de la météo');
+        }
+
+        const weather = await weatherRes.json();
+        const forecastRes = await fetch(
+          `${BASE_FORECAST}?lat=${lat}&lon=${lon}&units=${currentUnit}&appid=${API_KEY}`
+        );
+        const forecast = forecastRes.ok ? await forecastRes.json() : null;
+
+        forecastData = forecast;
+        lastCity = weather.name;
+        lastCoords = { lat, lon };
+        updateUI(weather, forecast);
+        showState('content');
+
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('errorMessage').textContent = error.message;
+        showState('error');
+      }
+    }
+
     // Récupère les données météorologiques et de prévisions de l'API et met à jour l'interface
     async function fetchWeather(city) {
       try {
@@ -103,6 +181,7 @@
         forecastData = forecast;
         updateUI(weather, forecast);
         lastCity = city;
+        lastCoords = { lat: weather.coord.lat, lon: weather.coord.lon };
         showState('content');
 
       } catch (error) {
@@ -238,7 +317,13 @@
           currentUnit = value;
           document.querySelectorAll('[data-type="temp"] .checkmark').forEach(c => c.style.display = 'none');
           option.querySelector('.checkmark').style.display = 'inline';
-          fetchWeather(lastCity);
+          
+          // Recharger avec les nouvelles unités
+          if (lastCoords) {
+            fetchWeatherByCoords(lastCoords.lat, lastCoords.lon);
+          } else {
+            fetchWeather(lastCity);
+          }
         } else if (type === 'wind') {
           currentWindUnit = value;
           document.querySelectorAll('[data-type="wind"] .checkmark').forEach(c => c.style.display = 'none');
@@ -273,6 +358,11 @@
     retryBtn.addEventListener('click', () => {
       fetchWeather(lastCity);
     });
+
+    // 🆕 Géolocalisation quand l'utilisateur clique sur le bouton de localisation
+    if (locationBtn) {
+      locationBtn.addEventListener('click', getUserLocation);
+    }
 
     // Initialiser l'application avec la ville par défaut
     fetchWeather('Douala');
