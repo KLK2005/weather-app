@@ -171,8 +171,8 @@
     }
 
     .location-btn {
-      background: linear-gradient(135deg, #FF8C42 0%, #FFA726 100%);
-      border: none;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       padding: 16px;
       border-radius: 12px;
       color: #fff;
@@ -186,9 +186,9 @@
     }
 
     .location-btn:hover {
-      background: linear-gradient(135deg, #FFA726 0%, #FFB84D 100%);
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255, 140, 66, 0.4);
     }
 
     .location-btn:active {
