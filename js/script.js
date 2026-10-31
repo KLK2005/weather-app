@@ -5,10 +5,10 @@
     let currentUnit = 'metric';
     let currentWindUnit = 'kmh';
     let currentPrecipUnit = 'mm';
-    let lastCity = 'Berlin';
+    let lastCity = 'Douala';
     let forecastData = null;
 
-    // DOM Elements
+    // Éléments du DOM
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
     const unitsBtn = document.getElementById('unitsBtn');
@@ -18,7 +18,7 @@
     const errorState = document.getElementById('errorState');
     const retryBtn = document.getElementById('retryBtn');
 
-    // Weather icon mapping
+    // Mappe les ID des conditions météorologiques aux emojis appropriés
     function getWeatherIcon(id, isDay = true) {
       if (id >= 200 && id < 300) return '⛈️';
       if (id >= 300 && id < 600) return '🌧️';
@@ -30,14 +30,15 @@
       return '☀️';
     }
 
-    // Format date
+    // Formate la date avec les noms de jours et de mois spécifiques à la locale
     function formatDate(timestamp, timezone = 0) {
       const date = new Date((timestamp + timezone) * 1000);
-      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      return `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+      const days = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+      const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+      return `${days[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
     }
 
+    // Formate l'heure au format 12 heures avec AM/PM
     function formatTime(timestamp) {
       const date = new Date(timestamp * 1000);
       const hours = date.getHours();
@@ -46,12 +47,13 @@
       return `${displayHours} ${period}`;
     }
 
+    // Retourne le nom de jour abrégé (dim, lun, etc.)
     function getDayName(timestamp) {
-      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
       return days[new Date(timestamp * 1000).getDay()];
     }
 
-    // Show/hide states
+    // Affiche ou masque les états de l'interface (chargement, erreur ou contenu)
     function showState(state) {
       loadingState.classList.add('hidden');
       errorState.classList.add('hidden');
@@ -66,14 +68,14 @@
       }
     }
 
-    // Format temperature
+    // Formate la température avec l'unité selon la sélection actuelle
     function formatTemp(temp) {
       const rounded = Math.round(temp);
       const unit = currentUnit === 'metric' ? '°C' : '°F';
       return `${rounded}${unit}`;
     }
 
-    // Format wind speed
+    // Formate la vitesse du vent avec conversion d'unité selon les paramètres actuels
     function formatWind(speed) {
       if (currentUnit === 'metric') {
         const kmh = Math.round(speed * 3.6);
@@ -83,7 +85,7 @@
       }
     }
 
-    // Fetch weather data
+    // Récupère les données météorologiques et de prévisions de l'API et met à jour l'interface
     async function fetchWeather(city) {
       try {
         showState('loading');
@@ -91,7 +93,7 @@
         const weatherRes = await fetch(`${BASE_WEATHER}?q=${encodeURIComponent(city)}&units=${currentUnit}&appid=${API_KEY}`);
         
         if (!weatherRes.ok) {
-          throw new Error(weatherRes.status === 404 ? 'City not found' : 'Failed to fetch weather');
+          throw new Error(weatherRes.status === 404 ? 'Ville non trouvée' : 'Échec de la récupération de la météo');
         }
 
         const weather = await weatherRes.json();
@@ -110,7 +112,7 @@
       }
     }
 
-    // Update UI with weather data
+    // Met à jour tous les éléments de l'interface avec les données météorologiques
     function updateUI(weather, forecast) {
       document.getElementById('locationName').textContent = `${weather.name}, ${weather.sys.country}`;
       document.getElementById('currentDate').textContent = formatDate(weather.dt, weather.timezone);
@@ -120,31 +122,69 @@
       document.getElementById('humidity').textContent = `${weather.main.humidity}%`;
       document.getElementById('wind').textContent = formatWind(weather.wind.speed);
       
-      // Precipitation (OpenWeather doesn't provide direct precipitation in current weather)
+      // Précipitations (l'API OpenWeather ne fournit pas les précipitations directes dans les conditions actuelles, on utilise donc les données de pluie/neige)
       const precip = weather.rain?.['1h'] || weather.snow?.['1h'] || 0;
       const precipValue = currentPrecipUnit === 'mm' ? precip.toFixed(1) : (precip / 25.4).toFixed(2);
       const precipUnit = currentPrecipUnit === 'mm' ? 'mm' : 'in';
       document.getElementById('precipitation').textContent = `${precipValue} ${precipUnit}`;
 
-      // Update hourly forecast
+      // Met à jour les prévisions horaires avec la liste déroulante des jours
       if (forecast) {
+        const daySelector = document.getElementById('daySelector');
         const hourlyList = document.getElementById('hourlyList');
-        hourlyList.innerHTML = '';
         
-        forecast.list.slice(0, 8).forEach(item => {
-          const div = document.createElement('div');
-          div.className = 'hourly-item';
-          div.innerHTML = `
-            <div class="hourly-time">
-              <span class="hourly-icon-small">${getWeatherIcon(item.weather[0].id)}</span>
-              <span>${formatTime(item.dt)}</span>
-            </div>
-            <div class="hourly-temp">${formatTemp(item.main.temp)}</div>
-          `;
-          hourlyList.appendChild(div);
+        // Créer un objet pour grouper les données par jour
+        const dailyDataMap = {};
+        forecast.list.forEach(item => {
+          const date = new Date(item.dt * 1000);
+          const dayKey = date.toDateString();
+          if (!dailyDataMap[dayKey]) {
+            dailyDataMap[dayKey] = [];
+          }
+          dailyDataMap[dayKey].push(item);
         });
 
-        // Update daily forecast
+        // Mettre à jour la liste déroulante avec les jours disponibles
+        const uniqueDays = Object.keys(dailyDataMap);
+        daySelector.innerHTML = '<option value="0">Aujourd\'hui</option>';
+        uniqueDays.slice(1).forEach((day, index) => {
+          const date = new Date(day);
+          const dayName = getDayName(date.getTime() / 1000);
+          const option = document.createElement('option');
+          option.value = index + 1;
+          option.textContent = dayName;
+          daySelector.appendChild(option);
+        });
+
+        // Fonction pour afficher les prévisions horaires du jour sélectionné
+        function updateHourlyForecast(dayIndex) {
+          hourlyList.innerHTML = '';
+          const selectedDay = uniqueDays[dayIndex];
+          const dayItems = dailyDataMap[selectedDay];
+          
+          dayItems.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'hourly-item';
+            div.innerHTML = `
+              <div class="hourly-time">
+                <span class="hourly-icon-small">${getWeatherIcon(item.weather[0].id)}</span>
+                <span>${formatTime(item.dt)}</span>
+              </div>
+              <div class="hourly-temp">${formatTemp(item.main.temp)}</div>
+            `;
+            hourlyList.appendChild(div);
+          });
+        }
+
+        // Afficher les prévisions horaires du jour actuel par défaut
+        updateHourlyForecast(0);
+
+        // Ajouter l'événement de changement de jour
+        daySelector.addEventListener('change', (e) => {
+          updateHourlyForecast(parseInt(e.target.value));
+        });
+
+        // Met à jour les prévisions quotidiennes pour les 7 prochains jours, en calculant les températures min/max par jour
         const dailyGrid = document.getElementById('dailyGrid');
         dailyGrid.innerHTML = '';
         
@@ -157,7 +197,7 @@
           dailyData[day].temps.push(item.main.temp);
         });
 
-        Object.values(dailyData).slice(0, 7).forEach(day => {
+        Object.values(dailyData).slice(0, uniqueDays.length).forEach(day => {
           const maxTemp = Math.max(...day.temps);
           const minTemp = Math.min(...day.temps);
           
@@ -176,7 +216,7 @@
       }
     }
 
-    // Units menu toggle
+    // Basculer la visibilité du menu déroulant des unités
     unitsBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       unitsMenu.classList.toggle('active');
@@ -188,7 +228,7 @@
       }
     });
 
-    // Units selection
+    // Gérer la sélection d'unités et mettre à jour l'interface en conséquence
     document.querySelectorAll('.units-option').forEach(option => {
       option.addEventListener('click', () => {
         const type = option.getAttribute('data-type');
@@ -215,12 +255,13 @@
       });
     });
 
-    // Search functionality
+    // Rechercher une ville quand le bouton est cliqué ou que la touche Entrée est appuyée
     searchBtn.addEventListener('click', () => {
       const city = searchInput.value.trim();
       if (city) fetchWeather(city);
     });
 
+    // Permettre à la touche Entrée de déclencher la recherche
     searchInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
         const city = searchInput.value.trim();
@@ -228,10 +269,10 @@
       }
     });
 
-    // Retry button
+    // Réessayer la dernière recherche quand l'utilisateur clique sur le bouton de réessai
     retryBtn.addEventListener('click', () => {
       fetchWeather(lastCity);
     });
 
-    // Initialize
-    fetchWeather('Berlin');
+    // Initialiser l'application avec la ville par défaut
+    fetchWeather('Douala');

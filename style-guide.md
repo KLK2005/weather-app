@@ -1,47 +1,47 @@
-# Front-end Style Guide
+# Guide de Style Front-end
 
-## Layout
+## Mise en Page
 
-The designs were created to the following widths:
+Les designs ont été créés aux dimensions suivantes :
 
-- Mobile: 375px
-- Desktop: 1440px
+- Mobile : 375px
+- Bureau : 1440px
 
-> 💡 These are just the design sizes. Ensure content is responsive and meets WCAG requirements by testing the full range of screen sizes from 320px to large screens.
+> 💡 Ce ne sont que les tailles de design. Assurez-vous que le contenu est réactif et répond aux exigences WCAG en testant l'ensemble des tailles d'écran de 320px aux grands écrans.
 
-## Colors
+## Couleurs
 
-### Neutral
+### Neutres
 
-- **Neutral 900**: hsl(243, 96%, 9%)
-- **Neutral 800**: hsl(243, 27%, 20%)
-- **Neutral 700**: hsl(243, 23%, 24%)
-- **Neutral 600**: hsl(243, 23%, 30%)
-- **Neutral 300**: hsl(240, 6%, 70%)
-- **Neutral 200**: hsl(250, 6%, 84%)
-- **Neutral 0**: hsl(0, 0%, 100%)
+- **Neutre 900** : hsl(243, 96%, 9%)
+- **Neutre 800** : hsl(243, 27%, 20%)
+- **Neutre 700** : hsl(243, 23%, 24%)
+- **Neutre 600** : hsl(243, 23%, 30%)
+- **Neutre 300** : hsl(240, 6%, 70%)
+- **Neutre 200** : hsl(250, 6%, 84%)
+- **Neutre 0** : hsl(0, 0%, 100%)
 
 ### Orange
 
-- **Orange 500**: hsl(28, 100%, 52%)
+- **Orange 500** : hsl(28, 100%, 52%)
 
-### Blue
+### Bleu
 
-- **Blue 500**: hsl(233, 67%, 56%)
-- **Blue 700**: hsl(248, 70%, 36%)
+- **Bleu 500** : hsl(233, 67%, 56%)
+- **Bleu 700** : hsl(248, 70%, 36%)
 
-## Typography
+## Typographie
 
-### Body Copy
+### Texte du Corps
 
-- Font size: 18px
+- Taille de police : 18px
 
-### Font
+### Police
 
-- Family: [DM Sans](https://fonts.google.com/specimen/DM+Sans)
-- Weights: 300, 500, 600, 600i, 700
+- Famille : [DM Sans](https://fonts.google.com/specimen/DM+Sans)
+- Épaisseurs : 300, 500, 600, 600i, 700
 
-- Family: [Bricolage Grotesque](https://fonts.google.com/specimen/Bricolage+Grotesque)
-- Weights: 700
+- Famille : [Bricolage Grotesque](https://fonts.google.com/specimen/Bricolage+Grotesque)
+- Épaisseurs : 700
 
 >

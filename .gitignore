@@ -1,0 +1,24 @@
+# IDE et éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Système d'exploitation
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Fichiers temporaires
+*.tmp
+*.log
+*.cache
+
+# Node modules (si vous ajoutez npm plus tard)
+node_modules/
+package-lock.json
+
+# Variables d'environnement (pour protéger vos clés API)
+.env
+.env.local

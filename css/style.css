@@ -180,7 +180,8 @@
 
     /* Weather Card */
     .weather-card {
-      background: linear-gradient(135deg, #5B7FFF 0%, #4A6EE8 100%);
+      background-image: url(./../assets/images/bg-today-large.svg);
+      background-size: cover;
       border-radius: 24px;
       padding: 40px;
       position: relative;
@@ -369,6 +370,17 @@
       font-size: 14px;
     }
 
+    .day-selector option {
+      background: #1A2744;
+      color: #fff;
+      padding: 8px;
+    }
+
+    .day-selector option:checked {
+      background: #5B7FFF;
+      color: #fff;
+    }
+
     .hourly-list {
       display: flex;
       flex-direction: column;
@@ -405,6 +417,12 @@
     .hourly-temp {
       font-size: 18px;
       font-weight: 600;
+    }
+
+    img{
+      display: block;
+      width: 100px;
+
     }
 
     /* Loading & Error States */
